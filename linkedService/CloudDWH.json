@@ -1,0 +1,12 @@
+{
+	"name": "CloudDWH",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=svrclouddwh2.database.windows.net;initial catalog=CloudDWH;user id=vincent",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDZBREVDQUFBLTFERTEtNEUyOC1BQUZBLTc0QTAwNDEyQUE0M19lMzQ1YzIxMS0wMjA0LTQyOTQtOTVlZC1kN2RjYmFhNGNmYWEiDQp9"
+		}
+	}
+}
