@@ -82,7 +82,7 @@
 								"storedProcedureParameters": {
 									"Klantnaam": {
 										"value": {
-											"value": "@activity('LkpKlanten').output.value",
+											"value": "@item().Naam",
 											"type": "Expression"
 										},
 										"type": "String"
