@@ -1,0 +1,31 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CloudDWH",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Klantid",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Klantnummer",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Naam",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Klanten"
+		}
+	}
+}
