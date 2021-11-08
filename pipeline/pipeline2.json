@@ -49,7 +49,10 @@
 							"type": "DateTime"
 						},
 						"p_RunLogId": {
-							"value": "",
+							"value": {
+								"value": "@variables('MyRunID')",
+								"type": "Expression"
+							},
 							"type": "Int32"
 						},
 						"p_Status": {
