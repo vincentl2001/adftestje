@@ -7,7 +7,7 @@
 				"type": "AppendVariable",
 				"dependsOn": [
 					{
-						"activity": "SetRunID",
+						"activity": "StartRun",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -256,6 +256,106 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "StartRun",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SetRunID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[adflog].[stp_RunLog_Ins]",
+					"storedProcedureParameters": {
+						"p_ADFParentRunLogID": {
+							"value": null,
+							"type": "Guid"
+						},
+						"p_ADFRunID": {
+							"value": {
+								"value": "@variables('RunID')",
+								"type": "Expression"
+							},
+							"type": "Guid"
+						},
+						"p_RunStartDT": {
+							"value": null,
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CloudDWH",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "EndRun",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ForEach1_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Execute Pipeline2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[adflog].[stp_RunLog_Upd]",
+					"storedProcedureParameters": {
+						"p_RunEndDT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"p_RunLogId": {
+							"value": {
+								"value": "@variables('RunID')",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"p_Status": {
+							"value": null,
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CloudDWH",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
