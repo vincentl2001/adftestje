@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1_copy1",
+	"name": "pipeline1_copy2",
 	"properties": {
 		"activities": [
 			{
@@ -229,6 +229,32 @@
 					"value": {
 						"value": "@pipeline().RunId",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "hallo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"ParentRunID": {
+							"value": "@variables('RunID')",
+							"type": "Expression"
+						}
 					}
 				}
 			}
