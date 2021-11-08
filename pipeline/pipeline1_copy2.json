@@ -309,10 +309,6 @@
 									"type": "Expression"
 								}
 							},
-							"p_RunID": {
-								"type": "Int32",
-								"value": null
-							},
 							"p_RunStartDT": {
 								"type": "DateTime",
 								"value": null
@@ -341,7 +337,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "RunID",
-					"value": "@activity('SetRunId').output.firstRow.p_RunID"
+					"value": {
+						"value": "@activity('StartRun').output.firstRow.RunId",
+						"type": "Expression"
+					}
 				}
 			}
 		],
