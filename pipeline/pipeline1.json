@@ -252,7 +252,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"ParentRunID": {
-							"value": "@variables('RunID')variables('RunID')",
+							"value": "@variables('RunID').variables('RunID')",
 							"type": "Expression"
 						}
 					}
