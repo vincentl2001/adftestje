@@ -53,6 +53,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[adflog].[stp_RunLog_Ins]",
 					"storedProcedureParameters": {
