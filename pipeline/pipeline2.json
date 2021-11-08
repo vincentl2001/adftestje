@@ -3,31 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SetParentRunId",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Log Run",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "ParentRunID",
-					"value": {
-						"value": "@pipeline().parameters.ParentRunID",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "SetRunID",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "SetParentRunId",
+						"activity": "LogRun",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -37,49 +17,9 @@
 				"typeProperties": {
 					"variableName": "MyRunID",
 					"value": {
-						"value": "@pipeline().RunId",
+						"value": "@activity('LogRun').output.firstRow.p_RunID",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "Log Run",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[adflog].[stp_RunLog_Ins]",
-					"storedProcedureParameters": {
-						"p_ADFParentRunLogID": {
-							"value": {
-								"value": "@pipeline().parameters.ParentRunID",
-								"type": "Expression"
-							},
-							"type": "Guid"
-						},
-						"p_ADFRunID": {
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							},
-							"type": "Guid"
-						},
-						"p_RunStartDT": {
-							"value": null,
-							"type": "DateTime"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "CloudDWH",
-					"type": "LinkedServiceReference"
 				}
 			},
 			{
@@ -121,6 +61,52 @@
 				"linkedServiceName": {
 					"referenceName": "CloudDWH",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "LogRun",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[adflog].[stp_RunLog_Ins]",
+						"storedProcedureParameters": {
+							"p_ADFRunID": {
+								"type": "Guid",
+								"value": null
+							},
+							"p_ParentRunLogID": {
+								"type": "Int32",
+								"value": {
+									"value": "@pipeline().parameters.ParentRunID",
+									"type": "Expression"
+								}
+							},
+							"p_RunID": {
+								"type": "Int32",
+								"value": null
+							},
+							"p_RunStartDT": {
+								"type": "DateTime",
+								"value": null
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
 				}
 			}
 		],
