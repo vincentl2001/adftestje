@@ -1,0 +1,11 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"parameters": {
+			"ParentRunID": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
