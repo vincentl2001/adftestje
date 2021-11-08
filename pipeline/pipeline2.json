@@ -5,7 +5,14 @@
 			{
 				"name": "SetParentRunId",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Log Run",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "ParentRunID",
@@ -33,6 +40,86 @@
 						"value": "@pipeline().RunId",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Log Run",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"storedProcedureName": "[adflog].[stp_RunLog_Ins]",
+					"storedProcedureParameters": {
+						"p_ADFParentRunLogID": {
+							"value": {
+								"value": "@pipeline().parameters.ParentRunID",
+								"type": "Expression"
+							},
+							"type": "Guid"
+						},
+						"p_ADFRunID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "Guid"
+						},
+						"p_RunStartDT": {
+							"value": null,
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CloudDWH",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "End Run",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SetRunID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[adflog].[stp_RunLog_Upd]",
+					"storedProcedureParameters": {
+						"p_RunEndDT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"p_RunLogId": {
+							"value": "",
+							"type": "Int32"
+						},
+						"p_Status": {
+							"value": null,
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "CloudDWH",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],

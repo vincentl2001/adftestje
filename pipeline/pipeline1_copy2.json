@@ -259,50 +259,6 @@
 				}
 			},
 			{
-				"name": "StartRun",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "SetRunID",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[adflog].[stp_RunLog_Ins]",
-					"storedProcedureParameters": {
-						"p_ADFParentRunLogID": {
-							"value": null,
-							"type": "Guid"
-						},
-						"p_ADFRunID": {
-							"value": {
-								"value": "@variables('RunID')",
-								"type": "Expression"
-							},
-							"type": "Guid"
-						},
-						"p_RunStartDT": {
-							"value": null,
-							"type": "DateTime"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "CloudDWH",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
 				"name": "EndRun",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
@@ -356,6 +312,55 @@
 				"linkedServiceName": {
 					"referenceName": "CloudDWH",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "StartRun",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "SetRunID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[adflog].[stp_RunLog_Ins]",
+						"storedProcedureParameters": {
+							"p_ADFParentRunLogID": {
+								"type": "Guid",
+								"value": null
+							},
+							"p_ADFRunID": {
+								"type": "Guid",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							},
+							"p_RunStartDT": {
+								"type": "DateTime",
+								"value": null
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
 				}
 			}
 		],
