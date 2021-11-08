@@ -177,7 +177,7 @@
 						"typeProperties": {
 							"variableName": "MyRunID",
 							"value": {
-								"value": "@activity('LogRun').output.firstRow.p_RunID",
+								"value": "@activity('LogRun').output.firstRow.RunId",
 								"type": "Expression"
 							}
 						}
@@ -209,7 +209,10 @@
 									"type": "DateTime"
 								},
 								"p_RunLogId": {
-									"value": "",
+									"value": {
+										"value": "@variables('MyRunID')",
+										"type": "Expression"
+									},
 									"type": "Int32"
 								},
 								"p_Status": {
@@ -242,7 +245,10 @@
 								"storedProcedureParameters": {
 									"p_ADFRunID": {
 										"type": "Guid",
-										"value": null
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
 									},
 									"p_ParentRunLogID": {
 										"type": "Int32",
@@ -250,10 +256,6 @@
 											"value": "@pipeline().parameters.ParentRunID",
 											"type": "Expression"
 										}
-									},
-									"p_RunID": {
-										"type": "Int32",
-										"value": null
 									},
 									"p_RunStartDT": {
 										"type": "DateTime",
@@ -610,10 +612,6 @@
 											"type": "Expression"
 										}
 									},
-									"p_RunID": {
-										"type": "Int32",
-										"value": null
-									},
 									"p_RunStartDT": {
 										"type": "DateTime",
 										"value": null
@@ -643,7 +641,10 @@
 						"userProperties": [],
 						"typeProperties": {
 							"variableName": "RunID",
-							"value": "@activity('SetRunId').output.firstRow.p_RunID"
+							"value": {
+								"value": "@activity('StartRun').output.firstRow.RunId",
+								"type": "Expression"
+							}
 						}
 					}
 				],
