@@ -1,0 +1,88 @@
+{
+	"name": "pipeline1_copy3",
+	"properties": {
+		"activities": [
+			{
+				"name": "StartRun",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[adflog].[stp_RunLog_Ins]",
+						"storedProcedureParameters": {
+							"p_ParentRunLogID": {
+								"type": "Guid",
+								"value": null
+							},
+							"p_ADFRunID": {
+								"type": "Guid",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							},
+							"p_RunID": {
+								"type": "Int32",
+								"value": null
+							},
+							"p_RunStartDT": {
+								"type": "DateTime",
+								"value": null
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "StartRun",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "RunID",
+					"value": "1"
+				}
+			}
+		],
+		"variables": {
+			"testje": {
+				"type": "String",
+				"defaultValue": "a"
+			},
+			"testarray": {
+				"type": "Array",
+				"defaultValue": [
+					"1"
+				]
+			},
+			"RunID": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-10-08T12:39:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
