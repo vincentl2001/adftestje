@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1_copy2",
+	"name": "pipeline1_MetDatabricks",
 	"properties": {
 		"activities": [
 			{
