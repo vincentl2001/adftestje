@@ -80,67 +80,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SetParentRunId",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "ParentRunID",
-							"value": {
-								"value": "@pipeline().parameters.ParentRunID",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "SetRunID",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "SetParentRunId",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "MyRunID",
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"ParentRunID": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"MyRunID": {
-						"type": "String"
-					},
-					"ParentRunID": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -218,30 +157,37 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "hallo",
-						"type": "AppendVariable",
-						"dependsOn": [],
+						"name": "SetRunID",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "LogRun",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"userProperties": [],
 						"typeProperties": {
-							"variableName": "testarray",
+							"variableName": "MyRunID",
 							"value": {
-								"value": "@pipeline().globalParameters.hoihoi",
+								"value": "@activity('LogRun').output.firstRow.p_RunID",
 								"type": "Expression"
 							}
 						}
 					},
 					{
-						"name": "LkpKlanten_copy1",
-						"type": "Lookup",
+						"name": "End Run",
+						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "hallo",
+								"activity": "SetRunID",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -256,8 +202,64 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"storedProcedureName": "[[adflog].[stp_RunLog_Upd]",
+							"storedProcedureParameters": {
+								"p_RunEndDT": {
+									"value": null,
+									"type": "DateTime"
+								},
+								"p_RunLogId": {
+									"value": "",
+									"type": "Int32"
+								},
+								"p_Status": {
+									"value": null,
+									"type": "Int32"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "CloudDWH",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "LogRun",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[adflog].[stp_RunLog_Ins]",
+								"storedProcedureParameters": {
+									"p_ADFRunID": {
+										"type": "Guid",
+										"value": null
+									},
+									"p_ParentRunLogID": {
+										"type": "Int32",
+										"value": {
+											"value": "@pipeline().parameters.ParentRunID",
+											"type": "Expression"
+										}
+									},
+									"p_RunID": {
+										"type": "Int32",
+										"value": null
+									},
+									"p_RunStartDT": {
+										"type": "DateTime",
+										"value": null
+									}
+								},
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -265,58 +267,7 @@
 								"referenceName": "AzureSqlTable1",
 								"type": "DatasetReference",
 								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1_copy1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "LkpKlanten_copy1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
 							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('LkpKlanten_copy1').output.value",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "Stored procedure1_copy1",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "7.00:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[stp_ins_Klant]",
-										"storedProcedureParameters": {
-											"Klantnaam": {
-												"value": {
-													"value": "@item().Naam",
-													"type": "Expression"
-												},
-												"type": "String"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "CloudDWH",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
 						}
 					}
 				],
@@ -324,61 +275,38 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"parameters": {
+					"ParentRunID": {
+						"type": "string"
+					}
+				},
 				"variables": {
-					"testje": {
-						"type": "String",
-						"defaultValue": "a"
+					"MyRunID": {
+						"type": "String"
 					},
-					"testarray": {
-						"type": "Array",
-						"defaultValue": [
-							"1"
-						]
-					},
-					"RunID": {
+					"ParentRunID": {
 						"type": "String"
 					}
 				},
-				"annotations": [],
-				"lastPublishTime": "2021-10-08T12:39:19Z"
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
-				"[concat(variables('factoryId'), '/linkedServices/CloudDWH')]"
+				"[concat(variables('factoryId'), '/linkedServices/CloudDWH')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/pipeline1_copy2')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "hallo",
-						"type": "AppendVariable",
-						"dependsOn": [
-							{
-								"activity": "SetRunID",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "testarray",
-							"value": {
-								"value": "@pipeline().globalParameters.hoihoi",
-								"type": "Expression"
-							}
-						}
-					},
-					{
 						"name": "LkpKlanten",
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "hallo",
+								"activity": "SetRunId",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -494,7 +422,7 @@
 						"type": "Lookup",
 						"dependsOn": [
 							{
-								"activity": "hallo",
+								"activity": "SetRunId",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -573,24 +501,11 @@
 						}
 					},
 					{
-						"name": "SetRunID",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "RunID",
-							"value": {
-								"value": "@pipeline().RunId",
-								"type": "Expression"
-							}
-						}
-					},
-					{
 						"name": "Execute Pipeline2",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "hallo",
+								"activity": "SetRunId",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -605,10 +520,130 @@
 							"waitOnCompletion": true,
 							"parameters": {
 								"ParentRunID": {
-									"value": "@variables('RunID').variables('RunID')",
+									"value": "@variables('RunID')",
 									"type": "Expression"
 								}
 							}
+						}
+					},
+					{
+						"name": "EndRun",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "ForEach1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ForEach1_copy1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Pipeline2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[adflog].[stp_RunLog_Upd]",
+							"storedProcedureParameters": {
+								"p_RunEndDT": {
+									"value": null,
+									"type": "DateTime"
+								},
+								"p_RunLogId": {
+									"value": {
+										"value": "@variables('RunID')",
+										"type": "Expression"
+									},
+									"type": "Int32"
+								},
+								"p_Status": {
+									"value": null,
+									"type": "Int32"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "CloudDWH",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "StartRun",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[adflog].[stp_RunLog_Ins]",
+								"storedProcedureParameters": {
+									"p_ParentRunLogID": {
+										"type": "Guid",
+										"value": null
+									},
+									"p_ADFRunID": {
+										"type": "Guid",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										}
+									},
+									"p_RunID": {
+										"type": "Int32",
+										"value": null
+									},
+									"p_RunStartDT": {
+										"type": "DateTime",
+										"value": null
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "SetRunId",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "StartRun",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "RunID",
+							"value": "@activity('SetRunId').output.firstRow.p_RunID"
 						}
 					}
 				],
