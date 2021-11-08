@@ -5,7 +5,14 @@
 			{
 				"name": "hallo",
 				"type": "AppendVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SetRunID",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "testarray",
@@ -211,6 +218,19 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "SetRunID",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "RunID",
+					"value": {
+						"value": "@pipeline().RunId",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
@@ -223,6 +243,9 @@
 				"defaultValue": [
 					"1"
 				]
+			},
+			"RunID": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
