@@ -97,6 +97,13 @@
 									"type": "Expression"
 								}
 							},
+							"p_PipelineName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								}
+							},
 							"p_RunStartDT": {
 								"type": "DateTime",
 								"value": null
