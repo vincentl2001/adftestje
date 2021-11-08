@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"variableName": "MyRunID",
 					"value": {
-						"value": "@activity('LogRun').output.firstRow.p_RunID",
+						"value": "@activity('LogRun').output.firstRow.RunId",
 						"type": "Expression"
 					}
 				}
@@ -90,10 +90,6 @@
 									"value": "@pipeline().parameters.ParentRunID",
 									"type": "Expression"
 								}
-							},
-							"p_RunID": {
-								"type": "Int32",
-								"value": null
 							},
 							"p_RunStartDT": {
 								"type": "DateTime",
