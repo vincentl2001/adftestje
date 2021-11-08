@@ -1,9 +1,52 @@
 {
 	"name": "pipeline2",
 	"properties": {
+		"activities": [
+			{
+				"name": "SetParentRunId",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ParentRunID",
+					"value": {
+						"value": "@pipeline().parameters.ParentRunID",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetRunID",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SetParentRunId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MyRunID",
+					"value": {
+						"value": "@pipeline().RunId",
+						"type": "Expression"
+					}
+				}
+			}
+		],
 		"parameters": {
 			"ParentRunID": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"MyRunID": {
+				"type": "String"
+			},
+			"ParentRunID": {
+				"type": "String"
 			}
 		},
 		"annotations": []
