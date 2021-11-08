@@ -8,10 +8,10 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
-		"CloudDWH_connectionString": {
+		"AzureDatabricks_accessToken": {
 			"value": ""
 		},
-		"AzureDatabricks_accessToken": {
+		"CloudDWH_connectionString": {
 			"value": ""
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
