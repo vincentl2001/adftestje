@@ -11,6 +11,9 @@
 		"CloudDWH_connectionString": {
 			"value": ""
 		},
+		"AzureDatabricks_accessToken": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://sadatahubvincent.dfs.core.windows.net"
 		}
