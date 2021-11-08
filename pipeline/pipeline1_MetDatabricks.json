@@ -298,14 +298,18 @@
 						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[adflog].[stp_RunLog_Ins]",
 						"storedProcedureParameters": {
-							"p_ParentRunLogID": {
-								"type": "Guid",
-								"value": null
-							},
 							"p_ADFRunID": {
 								"type": "Guid",
+								"value": "@pipeline().RunId"
+							},
+							"p_ParentRunLogID": {
+								"type": "Int32",
+								"value": null
+							},
+							"p_PipelineName": {
+								"type": "String",
 								"value": {
-									"value": "@pipeline().RunId",
+									"value": "@pipeline().Pipeline",
 									"type": "Expression"
 								}
 							},
