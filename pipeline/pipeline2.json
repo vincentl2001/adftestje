@@ -38,7 +38,7 @@
 		],
 		"parameters": {
 			"ParentRunID": {
-				"type": "string"
+				"type": "int"
 			}
 		},
 		"variables": {
