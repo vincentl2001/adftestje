@@ -85,7 +85,10 @@
 						"storedProcedureParameters": {
 							"p_ADFRunID": {
 								"type": "Guid",
-								"value": null
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
 							},
 							"p_ParentRunLogID": {
 								"type": "Int32",
