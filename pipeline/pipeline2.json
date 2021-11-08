@@ -7,7 +7,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "LogRun",
+						"activity": "StartRun",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -17,13 +17,13 @@
 				"typeProperties": {
 					"variableName": "MyRunID",
 					"value": {
-						"value": "@activity('LogRun').output.firstRow.RunId",
+						"value": "@activity('StartRun').output.firstRow.RunId",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "End Run",
+				"name": "EndRun",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
@@ -67,7 +67,7 @@
 				}
 			},
 			{
-				"name": "LogRun",
+				"name": "StartRun",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
