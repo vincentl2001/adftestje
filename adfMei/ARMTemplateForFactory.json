@@ -305,7 +305,7 @@
 									"type": "Int32"
 								},
 								"p_Status": {
-									"value": null,
+									"value": "2",
 									"type": "Int32"
 								}
 							}
@@ -332,14 +332,18 @@
 								"type": "AzureSqlSource",
 								"sqlReaderStoredProcedureName": "[[adflog].[stp_RunLog_Ins]",
 								"storedProcedureParameters": {
-									"p_ParentRunLogID": {
-										"type": "Guid",
-										"value": null
-									},
 									"p_ADFRunID": {
 										"type": "Guid",
+										"value": "@pipeline().RunId"
+									},
+									"p_ParentRunLogID": {
+										"type": "Int32",
+										"value": null
+									},
+									"p_PipelineName": {
+										"type": "String",
 										"value": {
-											"value": "@pipeline().RunId",
+											"value": "@pipeline().Pipeline",
 											"type": "Expression"
 										}
 									},
@@ -652,7 +656,7 @@
 									"type": "Int32"
 								},
 								"p_Status": {
-									"value": null,
+									"value": "2",
 									"type": "Int32"
 								}
 							}
@@ -679,14 +683,18 @@
 								"type": "AzureSqlSource",
 								"sqlReaderStoredProcedureName": "[[adflog].[stp_RunLog_Ins]",
 								"storedProcedureParameters": {
-									"p_ParentRunLogID": {
-										"type": "Guid",
-										"value": null
-									},
 									"p_ADFRunID": {
 										"type": "Guid",
+										"value": "@pipeline().RunId"
+									},
+									"p_ParentRunLogID": {
+										"type": "Int32",
+										"value": null
+									},
+									"p_PipelineName": {
+										"type": "String",
 										"value": {
-											"value": "@pipeline().RunId",
+											"value": "@pipeline().Pipeline",
 											"type": "Expression"
 										}
 									},
@@ -765,7 +773,7 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "LogRun",
+								"activity": "StartRun",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -775,13 +783,13 @@
 						"typeProperties": {
 							"variableName": "MyRunID",
 							"value": {
-								"value": "@activity('LogRun').output.firstRow.RunId",
+								"value": "@activity('StartRun').output.firstRow.RunId",
 								"type": "Expression"
 							}
 						}
 					},
 					{
-						"name": "End Run",
+						"name": "EndRun",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
@@ -814,7 +822,7 @@
 									"type": "Int32"
 								},
 								"p_Status": {
-									"value": null,
+									"value": "2",
 									"type": "Int32"
 								}
 							}
@@ -825,7 +833,7 @@
 						}
 					},
 					{
-						"name": "LogRun",
+						"name": "StartRun",
 						"type": "Lookup",
 						"dependsOn": [],
 						"policy": {
@@ -852,6 +860,13 @@
 										"type": "Int32",
 										"value": {
 											"value": "@pipeline().parameters.ParentRunID",
+											"type": "Expression"
+										}
+									},
+									"p_PipelineName": {
+										"type": "String",
+										"value": {
+											"value": "@pipeline().Pipeline",
 											"type": "Expression"
 										}
 									},
