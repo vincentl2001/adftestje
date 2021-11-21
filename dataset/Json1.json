@@ -1,0 +1,38 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "books.json",
+				"folderPath": "/Bookstore/2021/11/21/13",
+				"fileSystem": "json"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"eBooks": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"language": {
+								"type": "string"
+							},
+							"edition": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
