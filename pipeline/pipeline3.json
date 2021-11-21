@@ -112,30 +112,11 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"sqlWriterStoredProcedureName": "[books].[stp_ins_Book_message]",
+						"sqlWriterTableType": "Message",
+						"storedProcedureTableTypeParameterName": "Message",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"path": "$['eBooks'][0]['language']"
-								},
-								"sink": {
-									"name": "language"
-								}
-							},
-							{
-								"source": {
-									"path": "$['eBooks'][0]['edition']"
-								},
-								"sink": {
-									"name": "edition"
-								}
-							}
-						]
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
@@ -145,7 +126,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable2",
+						"referenceName": "AzureSqlTable3",
 						"type": "DatasetReference"
 					}
 				]
