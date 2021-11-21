@@ -1,0 +1,30 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CloudDWH",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "book_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "language",
+				"type": "varchar"
+			},
+			{
+				"name": "edition",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "books",
+			"table": "book"
+		}
+	}
+}
