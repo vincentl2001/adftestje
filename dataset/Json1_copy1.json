@@ -17,15 +17,18 @@
 		"schema": {
 			"type": "object",
 			"properties": {
-				"eBooks": {
+				"Customers": {
 					"type": "array",
 					"items": {
 						"type": "object",
 						"properties": {
-							"language": {
-								"type": "string"
+							"Klantid": {
+								"type": "integer"
 							},
-							"edition": {
+							"Klantnummer": {
+								"type": "integer"
+							},
+							"Klantnaam": {
 								"type": "string"
 							}
 						}
