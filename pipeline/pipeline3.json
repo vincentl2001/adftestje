@@ -123,7 +123,7 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"path": "$['eBooks'][0]['language']"
+									"path": "$['Customers'][0]['Klantid']"
 								}
 							},
 							{
@@ -132,7 +132,12 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"path": "$['eBooks'][0]['edition']"
+									"path": "$['Customers'][0]['Klantnummer']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['Customers'][0]['Klantnaam']"
 								}
 							}
 						]
