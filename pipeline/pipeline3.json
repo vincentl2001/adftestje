@@ -118,11 +118,19 @@
 						"type": "TabularTranslator",
 						"mappings": [
 							{
+								"source": {
+									"name": "Klantid",
+									"type": "Int32"
+								},
 								"sink": {
 									"path": "$['eBooks'][0]['language']"
 								}
 							},
 							{
+								"source": {
+									"name": "Klantnummer",
+									"type": "Int32"
+								},
 								"sink": {
 									"path": "$['eBooks'][0]['edition']"
 								}
